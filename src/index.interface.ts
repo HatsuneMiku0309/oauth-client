@@ -1,3 +1,5 @@
+import { IORouter } from "./router.interface";
+
 export type TMethod = 'GET' | 'POST' | 'PUT' | 'DELETE';
 
 export type TAnyObj = { [key: string]: any };
@@ -20,6 +22,7 @@ export interface ILoginRes {
 export interface IRegistApiScopeBody {
     name: string,
     description: string;
+    is_required?: boolean;
     apis: {
         api: string;
         method: TMethod;
@@ -50,5 +53,5 @@ export interface IRegisterApiScopeRes {
 
 export interface IOapi {
     login(body: ILoginbody, options?: TAnyObj): Promise<ILoginRes>;
-    registerApiScope(system: string, body: IRegistApiScopeBody[]): Promise<IRegisterApiScopeRes[]>;
+    registerApiScope(system: string, body: IRegistApiScopeBody[] | IORouter): Promise<IRegisterApiScopeRes[]>;
 }

@@ -3,11 +3,13 @@ install();
 
 import { ILoginbody, ILoginRes, IOapi, IRegistApiScopeBody, IRegisterApiScopeRes, TAnyObj } from './index.interface';
 import got from 'got';
+import { IORouter } from './router.interface';
+import { ORouter } from './router';
 
 class Oapi implements IOapi {
     private _url: string = '';
     private _authorization: string = '';
-    private _options: TAnyObj & { rejectUnauthorized: boolean } = { rejectUnauthorized: false };
+    private _options: TAnyObj & { https: { rejectUnauthorized: boolean } } = { https: { rejectUnauthorized: false } };
     protocol: string = '';
     uri: string = '';
     port?: number;
@@ -48,18 +50,19 @@ class Oapi implements IOapi {
         }
     }
 
-    async registerApiScope(system: string, body: IRegistApiScopeBody[]): Promise<IRegisterApiScopeRes[]> {
+    async registerApiScope(system: string, body: IRegistApiScopeBody[] | IORouter): Promise<IRegisterApiScopeRes[]> {
         try {
             if (system === '') {
                 throw new Error('system is empty');
             }
+            let _body = body instanceof ORouter ? body.apiScopes : body;
 
             let res = await got.post(`${this._url}/api/api-scope/register/${system}`, {
                 ...this._options,
                 headers: {
                     Authorization: this._authorization
                 },
-                json: body
+                json: _body
             });
             let result = JSON.parse(res.body).data;
 
@@ -75,6 +78,7 @@ export default Oapi;
 export {
     Oapi
 };
+
 
 let oapi = new Oapi({ port: 5556 });
 (async () => {
