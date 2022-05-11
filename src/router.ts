@@ -62,7 +62,7 @@ class ORouter implements IORouter {
             if (_findApiScope) {
                 let findApisIndex = _findApiScope.apis.findIndex((api) => api.api === `${rootPath}${path}` && api.method === method);
                 if (findApisIndex !== -1) {
-                    throw new Error(`Duplicate register Api in [${name}]`);
+                    throw new Error(`Duplicate register Api in [${name}-${method}]`);
                 }
                 _findApiScope.apis.push({ ...params, api: `${rootPath}${path}`, method: method });
             } else {
