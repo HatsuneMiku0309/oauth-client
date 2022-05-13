@@ -12,7 +12,7 @@ import { oMiddle } from '../middle';
 
     let oapi = new Oapi({ port: 5556 });
     oapi.setConfig('client_secret123.json');
-    let a = await oMiddle<Koa.Middleware>('koa', oapi);
+    let a = oMiddle<Koa.Middleware>('koa', oapi);
     app.use(a);
 
     router.get('/api/gogo', (ctx) => {

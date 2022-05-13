@@ -12,7 +12,7 @@ import { oMiddle } from '../middle';
     let oapi = new Oapi({ port: 5556 });
     oapi.setConfig('client_secret123.json');
 
-    let a = await oMiddle<express.Express>('express', oapi);
+    let a = oMiddle<express.Express>('express', oapi);
 
     app.use(a);
 

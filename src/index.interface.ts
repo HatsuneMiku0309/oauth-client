@@ -84,6 +84,7 @@ export interface IVerifyTokenRes extends JwtPayload {
     CLIENT_ID: string;
     USER_ID: string;
     SCOPES: IOauthApplicationScopeAndApiScopeRes[];
+    APIS: ({ api: string, method: TMethod } & TAnyObj)[];
 }
 
 export interface IError extends Error {

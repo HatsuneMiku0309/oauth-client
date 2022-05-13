@@ -5,9 +5,9 @@ import * as Koa from 'koa';
 import { IError, IOapi, TAnyObj } from './index.interface';
 import { TContext } from './router.interface';
 
-export async function oMiddle <T = Koa.Middleware | Express > (
+export function oMiddle <T = Koa.Middleware | Express > (
     type: 'express' | 'koa', callback: IOapi, options: TAnyObj = { }
-): Promise<T> {
+): T {
     if (type === 'koa') {
         let r: any = async (ctx: TContext, next: Koa.Next): Promise<any> => {
             try {
@@ -15,6 +15,7 @@ export async function oMiddle <T = Koa.Middleware | Express > (
                 if (result.ACTIVE === false) {
                     throw new Error('token verify fail');
                 }
+                ctx.state.oauth = result;
 
                 await next();
             } catch (err: any) {
@@ -34,6 +35,7 @@ export async function oMiddle <T = Koa.Middleware | Express > (
                 if (result.ACTIVE === false) {
                     throw new Error('token verify fail');
                 }
+                req.oauth = result;
 
                 await next();
             } catch (err: any) {
