@@ -3,6 +3,8 @@ import { IORouter, TContext } from "./router.interface";
 
 export type TMethod = 'GET' | 'POST' | 'PUT' | 'DELETE';
 export type TAnyObj = { [key: string]: any };
+export type TSource = 'SELF' | 'COMPAL';
+export type TUSER_TYPE = 'VIEWER' | 'DEVELOPER' | 'ADMIN' | 'ROOT';
 
 export interface IConfig {
     web: {
@@ -26,6 +28,8 @@ export interface ILoginRes {
         ACCOUNT: string;
         EMAIL: string;
         PHONE: string;
+        SOURCE: TSource;
+        USER_TYPE?: TUSER_TYPE;
     }
     token: string;
 }
@@ -83,6 +87,8 @@ export interface IVerifyTokenRes extends JwtPayload {
     ACTIVE: boolean;
     CLIENT_ID: string;
     USER_ID: string;
+    USER_EMP_NO: string;
+    USER_ACCOUNT: string;
     SCOPES: IOauthApplicationScopeAndApiScopeRes[];
     APIS: ({ api: string, method: TMethod } & TAnyObj)[];
 }
