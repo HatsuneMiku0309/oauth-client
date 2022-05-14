@@ -6,16 +6,21 @@ import { IError, IOapi, TAnyObj } from './index.interface';
 import { TContext } from './router.interface';
 
 export function oMiddle <T = Koa.Middleware | Express > (
-    type: 'express' | 'koa', callback: IOapi, options: TAnyObj = { }
+    type: 'express' | 'koa', callback: IOapi, options: TAnyObj & { ignoresApi?: string[] } = { }
 ): T {
+    const { ignoresApi = [] } = options;
     if (type === 'koa') {
         let r: any = async (ctx: TContext, next: Koa.Next): Promise<any> => {
             try {
-                let result = await callback.verifyToken(ctx, options);
-                if (result.ACTIVE === false) {
-                    throw new Error('token verify fail');
+                if (!new RegExp(ignoresApi.join('|')).test(ctx.url) || ignoresApi.length === 0) {
+                    let result = await callback.verifyToken(ctx, options);
+                    if (result.ACTIVE === false) {
+                        throw new Error('token verify fail');
+                    }
+                    ctx.state.oauth = result;
+                } else {
+                    ctx.state.oauth = true;
                 }
-                ctx.state.oauth = result;
 
                 await next();
             } catch (err: any) {
@@ -29,13 +34,17 @@ export function oMiddle <T = Koa.Middleware | Express > (
     } else if (type === 'express') {
         let r: any = async (req: any, res: any, next: any) => {
             try {
-                let result = await callback.verifyToken(<any> {
-                    headers: { authorization: req.headers.authorization }
-                }, options);
-                if (result.ACTIVE === false) {
-                    throw new Error('token verify fail');
+                if (!new RegExp(ignoresApi.join('|')).test(req.url) || ignoresApi.length === 0) {
+                    let result = await callback.verifyToken(<any> {
+                        headers: { authorization: req.headers.authorization }
+                    }, options);
+                    if (result.ACTIVE === false) {
+                        throw new Error('token verify fail');
+                    }
+                    req.oauth = result;
+                } else {
+                    req.oauth = true;
                 }
-                req.oauth = result;
 
                 await next();
             } catch (err: any) {
