@@ -34,15 +34,17 @@ export interface ILoginRes {
     token: string;
 }
 
+export interface IAPIs extends TAnyObj {
+    api: string;
+    method: TMethod;
+}
+
 export interface IRegistApiScopeBody {
     name: string,
     description: string;
     is_required?: boolean;
-    apis: {
-        api: string;
-        method: TMethod;
-        [key: string]: any;
-    }[]
+    require_check?: boolean;
+    apis: IAPIs[]
 }
 
 export interface IAPIs extends TAnyObj {

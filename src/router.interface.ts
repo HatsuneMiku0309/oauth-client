@@ -11,7 +11,7 @@ export interface IORouter {
     get apiScopes(): IRegistApiScopeBody[];
     registerApiScope(name: string, options?: { rootPath?: string, description?: string, is_required?: boolean })
     :(
-        method: TMethod, path: string | RegExp, params?: TAnyObj
+        method: TMethod, path: string | RegExp, params?: TAnyObj, _options?: TAnyObj & { require_check?: boolean }
     ) => void;
 }
 

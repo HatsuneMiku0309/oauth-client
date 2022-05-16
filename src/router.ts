@@ -31,7 +31,7 @@ class ORouter implements IORouter {
      */
     registerApiScope(
         name: string, options?: { rootPath?: string, description?: string; is_required?: boolean; }
-    ): (method: TMethod, path: string | RegExp, params?: TAnyObj) => void {
+    ): (method: TMethod, path: string | RegExp, params?: TAnyObj, _options?: TAnyObj & { require_check?: boolean }) => void {
         const { rootPath = '/api', description = '', is_required = false } = options || { };
         let findApiScope = this._apiScopes.find((apiScope) => { return apiScope.name === name; });
         if (!findApiScope) {
@@ -39,6 +39,7 @@ class ORouter implements IORouter {
                 name,
                 description,
                 is_required,
+                require_check: false,
                 apis: []
             });
         } else {
@@ -47,7 +48,8 @@ class ORouter implements IORouter {
             }
         }
 
-        return (method: TMethod, path: string | RegExp, params: TAnyObj = { }) => {
+        return (method: TMethod, path: string | RegExp, params: TAnyObj = { }, _options: TAnyObj & { require_check?: boolean } = { }) => {
+            const { require_check = false } = _options;
             if (!['GET', 'POST', 'PUT', 'DELETE'].includes(method)) {
                 throw new Error('[method] error');
             }
@@ -60,6 +62,7 @@ class ORouter implements IORouter {
 
             let _findApiScope = this._apiScopes.find((apiScope) => { return apiScope.name === name; });
             if (_findApiScope) {
+                !!require_check && (_findApiScope.require_check = require_check);
                 let findApisIndex = _findApiScope.apis.findIndex((api) => api.api === `${rootPath}${path}` && api.method === method);
                 if (findApisIndex !== -1) {
                     throw new Error(`Duplicate register Api in [${name}-${method}]`);
