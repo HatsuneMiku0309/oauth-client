@@ -25,7 +25,7 @@ export function oMiddle <T = Koa.Middleware | Express > (
                 await next();
             } catch (err: any) {
                 let _err: IError = err;
-                _err.state = 403;
+                _err.state = err.response.status;
                 ctx.body = JSON.parse(err.response.body);
             }
         };
@@ -50,7 +50,7 @@ export function oMiddle <T = Koa.Middleware | Express > (
             } catch (err: any) {
                 if (!!err.response) {
                     let errBody = JSON.parse(err.response.body);
-                    res.status(403).json(errBody);
+                    res.status(err.response.statusCode).json(errBody);
                 } else {
                     res.status(500).json({ message: err.message });
                 }

@@ -29,6 +29,14 @@ class Oapi implements IOapi {
         this._options = { ...this._options, ...options };
     }
 
+    get config(): IConfig {
+        if (!this._config) {
+            throw new Error('you should setConfig');
+        }
+
+        return this._config;
+    }
+
     setConfig(filePath: string): void {
         try {
             let configString = fs.readFileSync(path.resolve(process.cwd(), filePath)).toString();
