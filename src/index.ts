@@ -29,6 +29,10 @@ class Oapi implements IOapi {
         this._options = { ...this._options, ...options };
     }
 
+    get url(): string {
+        return this._url;
+    }
+
     get config(): IConfig {
         if (!this._config) {
             throw new Error('you should setConfig');
@@ -65,7 +69,10 @@ class Oapi implements IOapi {
             this._authorization = <string> res.headers.authorization;
             let result = JSON.parse(res.body).data;
 
-            return result;
+            return {
+                data: result,
+                token: this._authorization
+            };
         } catch (err) {
             throw err;
         }

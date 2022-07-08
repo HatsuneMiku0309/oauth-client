@@ -102,6 +102,10 @@ export interface IError extends Error {
 }
 
 export interface IOapi {
+    protocol: string;
+    uri: string;
+    port?: number;
+    get url(): string;
     get config(): IConfig;
     login(body: ILoginbody, options?: TAnyObj): Promise<ILoginRes>;
     registerApiScope(system: string, body: IRegistApiScopeBody[] | IORouter): Promise<IRegisterApiScopeRes[]>;
