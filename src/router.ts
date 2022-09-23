@@ -1,7 +1,7 @@
 import { install } from 'source-map-support';
 install();
 
-import { IRegistApiScopeBody, TAnyObj, TMethod } from './index.interface';
+import { IRegistApiScopeBody, TAnyObj, TMethod, TPublic } from './index.interface';
 import { IORouter } from './router.interface';
 
 class ORouter implements IORouter {
@@ -26,19 +26,20 @@ class ORouter implements IORouter {
     /**
      * 
      * @param name 
-     * @param options rootPath default '/api', is_required default false
+     * @param options rootPath default '/api', is_required default false, is_public default 'PRIVATE'
      * @returns 
      */
     registerApiScope(
-        name: string, options?: { rootPath?: string, description?: string; is_required?: boolean; }
-    ): (method: TMethod, path: string | RegExp, params?: TAnyObj, _options?: TAnyObj & { require_check?: boolean }) => void {
-        const { rootPath = '/api', description = '', is_required = false } = options || { };
+        name: string, options?: { rootPath?: string, description?: string; is_required?: boolean; is_public?: TPublic;  }
+    ): (method: TMethod, path: string | RegExp, params?: TAnyObj, _options?: TAnyObj & { require_check?: boolean}) => void {
+        const { rootPath = '/api', description = '', is_required = false, is_public = 'PRIVATE' } = options || { };
         let findApiScope = this._apiScopes.find((apiScope) => { return apiScope.name === name; });
         if (!findApiScope) {
             this._apiScopes.push({
                 name,
                 description,
                 is_required,
+                is_public,
                 require_check: false,
                 apis: []
             });

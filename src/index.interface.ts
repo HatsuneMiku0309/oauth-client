@@ -44,6 +44,7 @@ export interface IRegistApiScopeBody {
     description: string;
     is_required?: boolean;
     require_check?: boolean;
+    is_public?: TPublic
     apis: IAPIs[]
 }
 
