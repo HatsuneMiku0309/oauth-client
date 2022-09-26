@@ -80,18 +80,22 @@ class Oapi implements IOapi {
 
     async registerApiScope(system: string, body: IRegistApiScopeBody[] | IORouter): Promise<IRegisterApiScopeRes[]> {
         try {
-            if (system === '') {
+            if (!system) {
                 throw new Error('system is empty');
             }
+            if (!this._config) {
+                throw new Error('you should setConfig');
+            }
+            let basicToken = `${Buffer.from(`${this._config.web.client_id}:${this._config.web.client_secret}`).toString('base64')}`;
             let _body = body instanceof ORouter ? body.apiScopes : body;
-
             let res = await got.post(`${this._url}/api/api-scope/register/${system}`, {
                 ...this._options,
                 headers: {
-                    Authorization: this._authorization
+                    Authorization: `Basic ${basicToken}`
                 },
                 json: _body
             });
+
             let result = JSON.parse(res.body).data;
 
             return result;
