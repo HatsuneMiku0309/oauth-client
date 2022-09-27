@@ -34,7 +34,8 @@ export function oMiddle <T = Koa.Middleware | Express > (
     } else if (type === 'express') {
         let r: any = async (req: any, res: any, next: any) => {
             try {
-                if (!new RegExp(ignoresApi.join('|')).test(req.url) || ignoresApi.length === 0) {
+                let url = req.url.split('?')[0];
+                if (!new RegExp(ignoresApi.join('|')).test(url) || ignoresApi.length === 0) {
                     let result = await callback.verifyToken(<any> {
                         headers: { authorization: req.headers.authorization }
                     }, options);
