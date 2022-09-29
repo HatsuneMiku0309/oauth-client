@@ -1,38 +1,30 @@
-import { install } from 'source-map-support';
-install();
-
-import { IRegistApiScopeBody, TAnyObj, TMethod, TPublic } from './index.interface';
-import { IORouter } from './router.interface';
-
-class ORouter implements IORouter {
-    static instance: IORouter;
-    private _apiScopes: IRegistApiScopeBody[] = [];
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.ORouter = void 0;
+const source_map_support_1 = require("source-map-support");
+(0, source_map_support_1.install)();
+class ORouter {
+    static instance;
+    _apiScopes = [];
     constructor() {
-
     }
-
     static getInstance() {
         if (!ORouter.instance) {
             ORouter.instance = new ORouter();
         }
-
         return ORouter.instance;
     }
-
-    get apiScopes(): IRegistApiScopeBody[] {
+    get apiScopes() {
         return this._apiScopes;
     }
-
     /**
-     * 
-     * @param name 
+     *
+     * @param name
      * @param options rootPath default '/api', is_required default false, is_public default 'PRIVATE'
-     * @returns 
+     * @returns
      */
-    registerApiScope(
-        name: string, options?: { rootPath?: string, description?: string; is_required?: boolean; is_public?: TPublic;  }
-    ): (method: TMethod, path: string | RegExp, params?: TAnyObj, _options?: TAnyObj & { require_check?: boolean}) => void {
-        const { rootPath = '/api', description = '', is_required = false, is_public = 'PRIVATE' } = options || { };
+    registerApiScope(name, options) {
+        const { rootPath = '/api', description = '', is_required = false, is_public = 'PRIVATE' } = options || {};
         let findApiScope = this._apiScopes.find((apiScope) => { return apiScope.name === name; });
         if (!findApiScope) {
             this._apiScopes.push({
@@ -43,13 +35,13 @@ class ORouter implements IORouter {
                 require_check: false,
                 apis: []
             });
-        } else {
+        }
+        else {
             if (description !== findApiScope.description || is_required !== findApiScope.is_required) {
                 console.log('Warnning! you can\'t reset [description / is_required]');
             }
         }
-
-        return (method: TMethod, path: string | RegExp, params: TAnyObj = { }, _options: TAnyObj & { require_check?: boolean } = { }) => {
+        return (method, path, params = {}, _options = {}) => {
             const { require_check = false } = _options;
             if (!['GET', 'POST', 'PUT', 'DELETE'].includes(method)) {
                 throw new Error('[method] error');
@@ -60,7 +52,6 @@ class ORouter implements IORouter {
             if (typeof path !== 'string' && !(path instanceof RegExp)) {
                 throw new Error('[path] Unknown type');
             }
-
             let _findApiScope = this._apiScopes.find((apiScope) => { return apiScope.name === name; });
             if (_findApiScope) {
                 !!require_check && (_findApiScope.require_check = require_check);
@@ -69,14 +60,12 @@ class ORouter implements IORouter {
                     throw new Error(`Duplicate register Api in [${name}-${method}]`);
                 }
                 _findApiScope.apis.push({ ...params, api: `${rootPath}${path}`, method: method });
-            } else {
+            }
+            else {
                 throw new Error('have bug... QAQ');
             }
         };
     }
-
 }
-
-export {
-    ORouter
-};
+exports.ORouter = ORouter;
+//# sourceMappingURL=router.js.map

@@ -1,16 +1,12 @@
-import { install } from 'source-map-support';
-install();
-import { Express } from 'express';
-import * as Koa from 'koa';
-import { IError, IOapi, TAnyObj } from './index.interface';
-import { TContext } from './router.interface';
-
-export function oMiddle <T = Koa.Middleware | Express > (
-    type: 'express' | 'koa', callback: IOapi, options: TAnyObj & { ignoresApi?: string[] } = { }
-): T {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.oMiddle = void 0;
+const source_map_support_1 = require("source-map-support");
+(0, source_map_support_1.install)();
+function oMiddle(type, callback, options = {}) {
     const { ignoresApi = [] } = options;
     if (type === 'koa') {
-        let r: any = async (ctx: TContext, next: Koa.Next): Promise<any> => {
+        let r = async (ctx, next) => {
             try {
                 if (!new RegExp(ignoresApi.join('|')).test(ctx.url) || ignoresApi.length === 0) {
                     let result = await callback.verifyToken(ctx, options);
@@ -18,50 +14,54 @@ export function oMiddle <T = Koa.Middleware | Express > (
                         throw new Error('token verify fail');
                     }
                     ctx.state.oauth = result;
-                } else {
+                }
+                else {
                     ctx.state.oauth = true;
                 }
-
                 await next();
-            } catch (err: any) {
-                let _err: IError = err;
+            }
+            catch (err) {
+                let _err = err;
                 _err.state = err.response.status;
                 ctx.body = JSON.parse(err.response.body);
             }
         };
-
         return r;
-    } else if (type === 'express') {
-        let r: any = async (req: any, res: any, next: any) => {
+    }
+    else if (type === 'express') {
+        let r = async (req, res, next) => {
             try {
                 let url = req.url.split('?')[0];
                 if (!new RegExp(ignoresApi.join('|')).test(url) || ignoresApi.length === 0) {
-                    let result = await callback.verifyToken(<any> {
+                    let result = await callback.verifyToken({
                         headers: { authorization: req.headers.authorization }
                     }, options);
                     if (result.ACTIVE === false) {
                         throw new Error('token verify fail');
                     }
                     req.oauth = result;
-                } else {
+                }
+                else {
                     req.oauth = true;
                 }
-
                 await next();
-            } catch (err: any) {
+            }
+            catch (err) {
                 if (!!err.response) {
                     let errBody = JSON.parse(err.response.body);
                     res.status(err.response.statusCode).json(errBody);
-                } else {
+                }
+                else {
                     res.status(500).json({ message: err.message });
                 }
-
                 res.end();
             }
         };
-
         return r;
-    } else {
+    }
+    else {
         throw new Error('Unkowns type');
     }
 }
+exports.oMiddle = oMiddle;
+//# sourceMappingURL=middle.js.map

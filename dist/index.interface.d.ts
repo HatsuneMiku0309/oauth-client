@@ -1,11 +1,11 @@
 import { JwtPayload } from "jsonwebtoken";
 import { IORouter, TContext } from "./router.interface";
-
-export type TMethod = 'GET' | 'POST' | 'PUT' | 'DELETE';
-export type TAnyObj = { [key: string]: any };
-export type TSource = 'SELF' | 'COMPAL';
-export type TUSER_TYPE = 'VIEWER' | 'DEVELOPER' | 'ADMIN' | 'ROOT';
-
+export declare type TMethod = 'GET' | 'POST' | 'PUT' | 'DELETE';
+export declare type TAnyObj = {
+    [key: string]: any;
+};
+export declare type TSource = 'SELF' | 'COMPAL';
+export declare type TUSER_TYPE = 'VIEWER' | 'DEVELOPER' | 'ADMIN' | 'ROOT';
 export interface IConfig {
     web: {
         client_id: string;
@@ -14,14 +14,12 @@ export interface IConfig {
         token_uri: string;
         client_secret: string;
         redirect_uri: string;
-    }
+    };
 }
-
 export interface ILoginbody {
     account: string;
     password: string;
 }
-
 export interface ILoginRes {
     data: {
         ID: string;
@@ -30,45 +28,39 @@ export interface ILoginRes {
         PHONE: string;
         SOURCE: TSource;
         USER_TYPE?: TUSER_TYPE;
-    }
+    };
     token: string;
 }
-
 export interface IAPIs extends TAnyObj {
     api: string;
     method: TMethod;
 }
-
 export interface IRegistApiScopeBody {
-    name: string,
+    name: string;
     description: string;
     is_required?: boolean;
     require_check?: boolean;
-    is_public?: TPublic
-    apis: IAPIs[]
+    is_public?: TPublic;
+    apis: IAPIs[];
 }
-
 export interface IAPIs extends TAnyObj {
     api: string;
     method: TMethod;
 }
-
-export type TPublic = 'PUBLIC' | 'PRIVATE';
-
+export declare type TPublic = 'PUBLIC' | 'PRIVATE';
 export interface IRegisterApiScopeRes {
     ID: string;
     NAME: string;
     DESCRIPTION?: string;
     SYSTEM: string;
-    APIS: IAPIs[] | string; // setting string type because JSON.stringify(apis)
-    IS_REQUIRED?: boolean; // default: 0
-    IS_PUBLIC?: TPublic; // default: 'PRIVATE'
+    APIS: IAPIs[] | string;
+    IS_REQUIRED?: boolean;
+    IS_PUBLIC?: TPublic;
     CREATE_TIME?: Date;
     CREATE_BY: string;
     UPDATE_TIME?: Date;
     UPDATE_BY?: string;
 }
-
 export interface IOauthApplicationScopeAndApiScopeRes {
     ID: string;
     OAUTH_APPLICATION_ID: string;
@@ -76,7 +68,7 @@ export interface IOauthApplicationScopeAndApiScopeRes {
     NAME: string;
     SYSTEM: string;
     DESCRIPTION: string;
-    APIS: IAPIs[],
+    APIS: IAPIs[];
     IS_REQUIRED: boolean;
     IS_DISABLED: boolean;
     IS_CHECKED: boolean;
@@ -85,7 +77,6 @@ export interface IOauthApplicationScopeAndApiScopeRes {
     UPDATE_TIME: Date;
     UPDATE_BY: string;
 }
-
 export interface IVerifyTokenRes extends JwtPayload {
     ACTIVE: boolean;
     CLIENT_ID: string;
@@ -93,15 +84,16 @@ export interface IVerifyTokenRes extends JwtPayload {
     USER_EMP_NO: string;
     USER_ACCOUNT: string;
     SCOPES: IOauthApplicationScopeAndApiScopeRes[];
-    APIS: ({ api: string, method: TMethod } & TAnyObj)[];
+    APIS: ({
+        api: string;
+        method: TMethod;
+    } & TAnyObj)[];
 }
-
 export interface IError extends Error {
     state?: number | string;
     datas?: any[];
     data?: any;
 }
-
 export interface IOapi {
     protocol: string;
     uri: string;
